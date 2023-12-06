@@ -93,11 +93,15 @@ impl Note {
     }
 }
 
-pub fn run(args: &[String]) -> Result<(), Box<dyn Error>> {
-    if args.len() < 2 {
-        return Err("please provide a filename".into());
-    }
-    let mut note = Note::new(args[1].clone())?;
+pub fn run(mut args: impl Iterator<Item = String>) -> Result<(), Box<dyn Error>> {
+    args.next();
+
+    let name = match args.next() {
+        Some(arg) => arg,
+        None => return Err("please provide a filename".into()),
+    };
+
+    let mut note = Note::new(name)?;
     note.build()?;
     Ok(())
 }
